@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { INITIAL_ITEMS } from "../lib/constants";
 import AddItemForm from "./AddItemForm";
 import BackgroundHeading from "./BackgroundHeading";
@@ -11,7 +11,10 @@ import Logo from "./Logo";
 import Counter from "./Counter";
 
 export default function App() {
-  const [items, setItems] = useState(INITIAL_ITEMS);
+  const [items, setItems] = useState(() => {
+    const itemsFromLocalStorage = JSON.parse(localStorage.getItem("items"));
+    return itemsFromLocalStorage || INITIAL_ITEMS;
+  });
 
   const handleAddItem = (itemText) => {
     const newItem = {
@@ -68,6 +71,10 @@ export default function App() {
     handleResetAllItems,
     handleRemoveAllItems,
   };
+
+  useEffect(() => {
+    localStorage.setItem("items", JSON.stringify(items));
+  }, [items]);
 
   return (
     <>
