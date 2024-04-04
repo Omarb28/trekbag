@@ -21,19 +21,50 @@ export default function App() {
     setItems(newItems);
   };
 
-  const handleMarkAllAs = (complete) => {
-    const newItems = items.map((item) => {
-      item.packed = complete;
+  const handleRemoveItem = (id) => {
+    const newItems = items.filter((item) => {
+      return item.id !== id;
     });
     setItems(newItems);
   };
 
-  const handleResetItems = () => {
+  const handleToggleItem = (id) => {
+    const newItems = items.map((item) => {
+      if (item.id === id) {
+        return { ...item, packed: !item.packed };
+      }
+      return item;
+    });
+    setItems(newItems);
+  };
+
+  const handleMarkAllAsComplete = () => {
+    const newItems = items.map((item) => {
+      return { ...item, packed: true };
+    });
+    setItems(newItems);
+  };
+
+  const handleMarkAllAsIncomplete = () => {
+    const newItems = items.map((item) => {
+      return { ...item, packed: false };
+    });
+    setItems(newItems);
+  };
+
+  const handleResetAllItems = () => {
     setItems(INITIAL_ITEMS);
   };
 
-  const handleRemoveItems = () => {
+  const handleRemoveAllItems = () => {
     setItems([]);
+  };
+
+  const itemsHandleFunctions = {
+    handleMarkAllAsComplete,
+    handleMarkAllAsIncomplete,
+    handleResetAllItems,
+    handleRemoveAllItems,
   };
 
   return (
@@ -42,10 +73,14 @@ export default function App() {
 
       <main>
         <Header />
-        <ItemList items={items} setItems={setItems} />
+        <ItemList
+          items={items}
+          handleRemoveItem={handleRemoveItem}
+          handleToggleItem={handleToggleItem}
+        />
         <Sidebar>
           <AddItemForm onAddItem={handleAddItem} />
-          <ButtonGroup setItems={setItems} />
+          <ButtonGroup itemsHandleFunctions={itemsHandleFunctions} />
         </Sidebar>
         <button
           onClick={() => {
