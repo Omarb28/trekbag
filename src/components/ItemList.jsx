@@ -1,21 +1,69 @@
+import Select from "react-select";
+import EmptyView from "./EmptyView";
+import { useState } from "react";
+
 export default function ItemList({
   items,
   handleRemoveItem,
   handleToggleItem,
 }) {
+  const [sortBy, setSortBy] = useState("default");
+
+  const sortedItems = [...items].sort((a, b) => {
+    if (sortBy === "packed") {
+      return b.packed - a.packed;
+    } else if (sortBy === "unpacked") {
+      return a.packed - b.packed;
+    } else {
+      return a.id - b.id;
+    }
+  });
+
+  const sortingOptions = [
+    {
+      label: "Sort by default",
+      value: "default",
+    },
+    {
+      label: "Sort by packed",
+      value: "packed",
+    },
+    {
+      label: "Sory by unpacked",
+      value: "unpacked",
+    },
+  ];
+
   return (
-    <ul>
-      {items.map((item) => {
-        return (
-          <Item
-            key={item.id}
-            item={item}
-            onRemoveItem={handleRemoveItem}
-            onToggleItem={handleToggleItem}
-          />
-        );
-      })}
-    </ul>
+    <>
+      <ul className="item-list">
+        {items.length === 0 ? <EmptyView /> : null}
+
+        {items.length > 0 ? (
+          <section className="sorting">
+            <Select
+              options={sortingOptions}
+              defaultValue={sortingOptions[0]}
+              onChange={(option) => {
+                setSortBy(option.value);
+                console.log(option.value);
+              }}
+            />
+          </section>
+        ) : null}
+
+        {sortedItems.map((item) => {
+          return (
+            <Item
+              key={item.id}
+              item={item}
+              onRemoveItem={handleRemoveItem}
+              onToggleItem={handleToggleItem}
+            />
+          );
+        })}
+      </ul>
+    </>
   );
 }
 

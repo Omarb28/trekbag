@@ -7,6 +7,8 @@ import Footer from "./Footer";
 import Header from "./Header";
 import ItemList from "./ItemList";
 import Sidebar from "./Sidebar";
+import Logo from "./Logo";
+import Counter from "./Counter";
 
 export default function App() {
   const [items, setItems] = useState(INITIAL_ITEMS);
@@ -72,7 +74,14 @@ export default function App() {
       <BackgroundHeading />
 
       <main>
-        <Header />
+        <Header>
+          <Logo />
+          <Counter
+            numberOfPackedItems={items.filter((item) => item.packed).length}
+            totalNumberOfItems={items.length}
+          />
+        </Header>
+
         <ItemList
           items={items}
           handleRemoveItem={handleRemoveItem}
@@ -82,13 +91,6 @@ export default function App() {
           <AddItemForm onAddItem={handleAddItem} />
           <ButtonGroup itemsHandleFunctions={itemsHandleFunctions} />
         </Sidebar>
-        <button
-          onClick={() => {
-            handleMarkAllAs(true);
-          }}
-        >
-          Test
-        </button>
       </main>
 
       <Footer />
